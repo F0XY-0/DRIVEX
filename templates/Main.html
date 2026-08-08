@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive X</title>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        .nav-bar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 24px;
+            border-bottom: 1px solid #1e293b;
+            flex-shrink: 0;
+
+            background: linear-gradient(90deg, #020617, #0f2447, #1e3a5f, #0f2447, #020617);
+            background-size: 400% 400%;
+            animation: navGradient 12s ease infinite;
+            backdrop-filter: blur(12px);
+        }
+
+        @keyframes navGradient {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-right: auto;
+        }
+
+        .brand span { color: #3b82f6; }
+
+        .top-nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover { color: #fff; }
+
+        /* ── TOGGLE BUTTON ── */
+        .toggle-btn {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 0;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .toggle-btn:hover { background: #1e293b; }
+
+        .toggle-btn span {
+            display: block;
+            width: 16px;
+            height: 1.5px;
+            background: #94a3b8;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+        .toggle-btn.open span:nth-child(2) { opacity: 0; }
+        .toggle-btn.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+        /* ── LAYOUT ── */
+        .layout { display: flex; flex: 1; overflow: hidden; }
+
+        /* ── SIDEBAR ── */
+        .side-bar {
+            width: 220px;
+            background: #0d1117;
+            border-right: 1px solid #1e293b;
+            flex-shrink: 0;
+            padding: 20px 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: width 0.3s ease, opacity 0.3s ease;
+        }
+
+        .side-bar.hidden {
+            width: 0;
+            opacity: 0;
+            border-right: none;
+        }
+
+        .side-bar .section-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #475569;
+            padding: 0 20px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+        }
+
+        .side-bar ul { list-style: none; }
+
+        .side-bar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.875rem;
+            border-left: 2px solid transparent;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+
+        .side-bar ul li a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+            border-left-color: #3b82f6;
+        }
+
+        .side-bar ul li.active a {
+            color: #fff;
+            background: rgba(30, 58, 95, 0.2);
+            border-left-color: #3b82f6;
+        }
+
+        /* ── SCROLL AREA ── */
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 24px;
+        }
+
+        .scroll-area::-webkit-scrollbar { width: 5px; }
+        .scroll-area::-webkit-scrollbar-track { background: transparent; }
+        .scroll-area::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+
+        .page-heading {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .page-sub {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+
+        /* ── GRID ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        /* ── CAR CARD ── */
+        .car-card {
+            background: #111827;
+            border-radius: 14px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.1);
+        }
+
+        .car-img {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            overflow: hidden;
+            position: relative ; 
+        }
+
+        .car-hover-info {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.92);
+            color: #e2e8f0;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none; /* so it doesn't block the img's own hover-zoom */
+        }
+
+        .car-hover-info strong {
+            color: #60a5fa;
+        }
+
+        .car-hover-info .desc {
+            margin-top: 6px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        .car-card:hover .car-hover-info,
+        .car-card.info-open .car-hover-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .car-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s;
+        }
+
+        .car-card:hover .car-img img { transform: scale(1.06); }
+
+        .car-body {
+            padding: 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(160deg, #111827, #0d1526);
+        }
+
+        .car-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 10px;
+        }
+
+        .car-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .meta-pill {
+            font-size: 0.7rem;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+
+        .meta-pill.price {
+            background: #1e3a5f;
+            color: #60a5fa;
+            border-color: #1e40af;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 9px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            margin-top: auto;
+        }
+
+        .buy-btn:hover { opacity: 0.88; transform: scale(1.02); }
+        .buy-btn:active { transform: scale(0.97); }
+
+        .side-filter {
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }        
+
+        .side-filter label {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 10px;
+        }
+
+        .range-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .side-filter input,
+        .side-filter select {
+            background: #0a0a0f;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+            padding: 6px 8px;
+            font-size: 0.8rem;
+            width: 100%;
+        }
+
+        .side-filter input:focus,
+        .side-filter select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .side-filter button {
+            margin-top: 12px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            padding: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .side-filter button:hover { opacity: 0.88; }
+
+        .clear-link {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .clear-link:hover { color: #94a3b8; }
+
+        .compare-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .compare-bar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #111827;
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 20;
+        }
+
+        .compare-bar.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .compare-bar button {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            padding: 9px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .compare-bar button:hover {
+            opacity: 0.88;
+            transform: scale(1.02);
+        }
+
+        .compare-bar button:active {
+            transform: scale(0.97);
+        }
+
+        .compare-bar button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="nav-bar">
+        <button class="toggle-btn" id="togglebtn" aria-label="Toggle sidebar" aria-expanded="true">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="brand">Drive<span>X</span></div>
+
+        <nav class="top-nav">
+            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'contact' %}">Contact</a>
+        </nav>
+    </header>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="side-bar" id="sidebar">
+            
+            <div class="secction-label">MENU</div>
+            <ul>
+                <li class="active"><a href="{% url 'main' %}">Listing</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+
+            <div class="secction-label" style="margin-top: 24px;"> Filter</div>
+            
+            <form method="get" class="side-filter">
+                
+                <label>price</label>
+                <div class="range-row">
+                    <input type="number" name="price_min" placeholder="Min" value="{{ filter.price_min }}">
+                    <input type="number" name="price_max" placeholder="Max" value="{{ filter.price_max }}">
+                </div>
+
+                <label>Horsepower</label>
+                <div class="range-row">
+                    <input type="number" name="hp_min" placeholder="Min" value="{{ filters.hp_min }}">
+                    <input type="number" name="hp_max" placeholder="Max" value="{{ filters.hp_max }}">
+                </div>
+                
+                <label>Color</label>
+                <select name="color">
+                    <option value="">Any</option>
+                    {% for c in colors %}
+                        <option value="{{ c }}" {% if c == filters.color %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Search</button>
+                {% if filters.price_min or filters.price_max or filters.hp_min or filters.hp_max or filters.color %}
+                    <a href="{% url 'main' %}" class="clear-link">Clear filters</a>
+                {% endif %}
+            </form>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="scroll-area">
+            <h2 class="page-heading">Available Cars</h2>
+            <p class="page-sub">Browse and reserve your next vehicle</p>
+
+            <div class="grid">
+
+                {% for car in cars %}
+                <div class="car-card">
+
+                    <div class="car-img">
+                        {% if car.cover_image %}
+                            <img src="{{ car.cover_image.url }}" alt="{{ car.brand }} {{ car.model }}">
+                        {% endif %}
+
+                        <div class="car-hover-info">
+                            <p><strong>Brand:</strong> {{ car.brand }}</p>
+                            <p><strong>Model:</strong> {{ car.model }}</p>
+                            <p><strong>Year:</strong> {{ car.year }}</p>
+                            <p><strong>Color:</strong> {{ car.color }}</p>
+                            {% if car.description %}
+                                <!--<p class="desc">{{ car.description|truncatewords:20 }}</p>--> <!-- ima add some pop up later for -->
+                            {% endif %}
+                        </div>
+                    </div>  <!-- .car-img now closes here, after the overlay -->
+
+                    <div class="car-body">
+                        <div class="car-name">{{ car.brand }} {{ car.model }}</div>
+
+                        <div class="car-meta">
+                            <span class="meta-pill price">${{ car.price }}</span>
+                            <span class="meta-pill">{{ car.year }}</span>
+                            <span class="meta-pill">{{ car.color }}</span>
+                        </div>
+
+                        <label class="compare-Check">
+                            <input type="checkbox" class="compare-box" value="{{ car.id }}">
+                            Add to Compare
+                        </label>
+
+                        <a href="{% url 'car_detail' car.id %}" class="buy-btn" style="text-align:center; margin-bottom:8px; display:block;">View Details</a>
+                        <button class="buy-btn">get in touch</button>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+        </main>
+
+    </div>
+
+    <div class="compare-bar" id="compareBar">
+        <span id="compareCount">0 selected</span>
+        <button id="compareGoBtn">Compare Now</button>
+    </div>
+
+    <script>
+        const btn = document.getElementById('togglebtn');
+        const sidebar = document.getElementById('sidebar');
+        let open = true;
+
+        btn.onclick = function () {
+            open = !open;
+            sidebar.classList.toggle('hidden', !open);
+            btn.classList.toggle('open', !open);
+            btn.setAttribute('aria-expanded', open);
+        };
+
+        // all for ux and ui , hover and toggle info bar 
+
+        document.querySelectorAll(".car-card").forEach(card =>{
+            card.addEventListener("click" , function(E){
+                if (E.target.closest('.buy-btn')){
+                    return
+                } else {
+                    card.classList.toggle("info-open") ; 
+                }
+            }) ;
+        }) ; 
+
+        // main funcs and val for the compare feature here
+        const checks = document.querySelectorAll('.compare-box');
+        const bar = document.getElementById('compareBar');
+        const countLabel = document.getElementById('compareCount');
+        const goBtn = document.getElementById('compareGoBtn');
+
+        function updateBar() {
+            const selected = document.querySelectorAll('.compare-box:checked');
+            countLabel.textContent = selected.length + ' selected';
+            bar.classList.toggle('show', selected.length >= 2);
+            goBtn.disabled = selected.length < 2 ; 
+        }
+
+        checks.forEach(box =>
+            box.addEventListener('change', updateBar)
+        );
+
+        goBtn.addEventListener('click', function () {
+            const ids = Array.from(
+                document.querySelectorAll('.compare-box:checked')
+            ).map(box => box.value).join(',');
+
+            window.location.href = "{% url 'compare' %}?ids=" + ids;
+        });
+
+
+    </script>
+
+</body>
+</html>

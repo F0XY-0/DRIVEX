@@ -1,0 +1,1058 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive X — Find Your Next Car</title>
+
+    <style>
+        * { 
+            box-sizing: border-box; margin: 0; padding: 0;
+        }
+
+        html { 
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        a { 
+            text-decoration: none; 
+        }
+
+        /* ── NAVBAR ── */
+        .nav-bar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 24px;
+            border-bottom: 1px solid #1e293b;
+            flex-shrink: 0;
+
+            background: linear-gradient(90deg, #020617, #0f2447, #1e3a5f, #0f2447, #020617);
+            background-size: 400% 400%;
+            animation: navGradient 12s ease infinite;
+            backdrop-filter: blur(12px);
+        }
+
+        @keyframes navGradient {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-right: auto;
+        }
+
+        .brand span { 
+            color: #3b82f6; 
+        }
+
+        .top-nav { 
+            display: flex; align-items: center; 
+        }
+
+        .top-nav a {
+            color: #94a3b8;
+            margin-left: 22px;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover { 
+            color: #fff; 
+        }
+        .top-nav a.current { 
+            color: #fff; 
+        }
+
+        .nav-cta {
+            margin-left: 22px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff !important;
+            font-weight: 500;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .nav-cta:hover { 
+            opacity: 0.88; transform: scale(1.02); 
+        }
+
+        /* ── SECTION SHELL ── */
+        section { padding: 80px 24px; }
+
+        .section-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #60a5fa;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .section-sub {
+            font-size: 0.95rem;
+            color: #64748b;
+            max-width: 520px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            padding: 100px 24px 90px;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.14), transparent 45%),
+                radial-gradient(circle at 85% 60%, rgba(59, 130, 246, 0.08), transparent 50%);
+        }
+
+        .hero-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (max-width: 860px) {
+            .hero-inner { grid-template-columns: 1fr; }
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #1e3a5f;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-size: 2.9rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: #f8fafc;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            max-width: 460px;
+        }
+
+        .hero-actions { 
+            display: flex; gap: 12px; margin-bottom: 36px; 
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-primary:hover { 
+            opacity: 0.88; transform: scale(1.02); 
+        }
+
+        .btn-ghost {
+            padding: 12px 22px;
+            border-radius: 9px;
+            border: 1px solid #1e293b;
+            background: transparent;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-ghost:hover { 
+            border-color: #3b82f6; background: rgba(59,130,246,0.06);
+         }
+
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+        }
+
+        .hero-stats .stat-num {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .hero-stats .stat-label {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* Hero visual: mock car card stack */
+        .hero-visual {
+            grid-column: 2;
+            position: relative;
+            height: 380px;
+            align-self: center;
+        }
+
+        .hero-slide {
+            display: none;
+            grid-column: 1 / -1;
+            grid-template-columns: subgrid;   /* fallback below if unsupported */
+            gap: 40px;
+            align-items: center;
+        }
+
+        .hero-slideshow{
+            position: relative;
+            width: 100%;
+            grid-column: 1 / -1;   
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .hero-slide.active{
+            display: grid;
+            animation: slideIn 0.5s ease;
+        }
+
+        @supports not (grid-template-columns: subgrid) {
+            .hero-slide {
+                grid-template-columns: 1.05fr 0.95fr;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0; transform: translatey(10px);
+            } to {
+                opacity: 1; transform: translatey(0);
+            }
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            grid-column: 1;
+        }
+
+        .hero-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 44px;
+        }
+
+        .hero-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid #1e3a5f;
+            background: #1e293b;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.2s, transform 0.2s, width 0.2s;
+        }
+
+        .hero-dot:hover {
+            background: #334155;
+        }
+
+        .hero-dot.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            width: 22px;
+            border-radius: 4px;
+        }
+
+        .float-card {
+            position: absolute;
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .float-card.main {
+            width: 100%;
+            top: 20px;
+            left: 0;
+        }
+
+        .float-card.main .car-img {
+            height: 150px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e3a5f, #0f172a);
+            margin-bottom: 12px;
+        }
+
+        .float-card.main .car-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        .float-card.main .meta-pill {
+            font-size: 0.68rem;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #1e3a5f;
+            color: #60a5fa;
+            border: 1px solid #1e40af;
+            margin-right: 6px;
+        }
+
+        .float-card.badge {
+            width: 190px;
+            bottom: -10px;
+            right: -10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: floaty 4s ease-in-out infinite;
+        }
+
+        @media (max-width: 860px) {
+            .hero-inner { grid-template-columns: 1fr; }
+
+            .hero-slideshow {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-slide {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content,
+            .hero-visual {
+                grid-column: 1;
+            }
+
+            .hero-visual {
+                height: auto;
+                padding-bottom: 0;
+            }
+
+            .float-card.main {
+                position: static;
+                width: 100%;
+                margin-bottom: 16px;
+            }
+
+            .float-card.badge {
+                position: static;
+                width: 100%;
+                margin-top: 0;
+                animation: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.1rem;
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .float-card.badge {
+                position: static;
+                width: 100%;
+                margin-top: 12px;
+                animation: none;
+            }
+        }
+
+        @keyframes floaty {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .badge-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: #1e3a5f;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .badge-title { font-size: 0.78rem; color: #f1f5f9; font-weight: 600; }
+        .badge-sub { font-size: 0.68rem; color: #64748b; }
+
+        /* ── LOGO STRIP ── */
+        .logo-strip {
+            padding: 32px 24px;
+            border-top: 1px solid #1e293b;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .logo-strip .section-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-strip .strip-label {
+            font-size: 0.7rem;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+        }
+
+        .logo-strip .logos {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .logo-strip .logos span {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #334155;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── FEATURES ── */
+        .feat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 760px) {
+            .feat-grid { grid-template-columns: 1fr; }
+        }
+
+        .feat-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            padding: 22px;
+            transition: transform 0.25s, border-color 0.25s;
+        }
+
+        .feat-card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+        }
+
+        .feat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #1e3a5f;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+
+        .feat-card h4 {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        .feat-card p {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* ── FEATURED CARS ── */
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .car-card {
+            background: #111827;
+            border-radius: 14px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .car-card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.1);
+        }
+
+        .car-img {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            overflow: hidden;
+        }
+
+        .car-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s;
+        }
+
+        .car-card:hover .car-img img { transform: scale(1.06); }
+
+        .car-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+
+        .car-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 10px;
+        }
+
+        .car-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+        .meta-pill {
+            font-size: 0.7rem;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+
+        .meta-pill.price {
+            background: #1e3a5f;
+            color: #60a5fa;
+            border-color: #1e40af;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 9px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            margin-top: auto;
+        }
+
+        .buy-btn:hover { opacity: 0.88; transform: scale(1.02); }
+
+        .browse-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #60a5fa;
+            margin-top: 28px;
+        }
+
+        .browse-link:hover { color: #93c5fd; }
+
+        /* ── TESTIMONIAL ── */
+        .testi-wrap {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        @media (max-width: 700px) {
+            .testi-wrap { grid-template-columns: 1fr; }
+        }
+
+        .testi-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+            flex-shrink: 0;
+        }
+
+        .testi-quote {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            font-weight: 500;
+        }
+
+        .testi-name { font-size: 0.85rem; color: #f1f5f9; font-weight: 600; }
+        .testi-role { font-size: 0.78rem; color: #64748b; }
+
+        /* ── CTA BAND ── */
+        .cta-band {
+            background: linear-gradient(135deg, #14203a, #0d1626);
+            border-top: 1px solid #1e293b;
+            border-bottom: 1px solid #1e293b;
+            text-align: center;
+        }
+
+        .cta-band .section-inner { max-width: 640px; }
+
+        .cta-band h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-band p {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            margin-bottom: 28px;
+        }
+
+        .cta-band .hero-actions { justify-content: center; margin-bottom: 0; }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 48px 24px 28px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-grid {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 36px;
+        }
+
+        @media (max-width: 700px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .footer-brand p {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-top: 12px;
+            line-height: 1.6;
+            max-width: 260px;
+        }
+
+        .footer-col .col-title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 14px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover { color: #fff; }
+
+        .footer-bottom {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding-top: 24px;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: #475569;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #222;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.4s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .toast a {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="toast show" id="toast">
+        Have questions? Visit <a href="{% url 'contact' %}">Contact</a>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="nav-bar">
+        <div class="brand">Drive<span>X</span></div>
+
+        <nav class="top-nav">
+            <a href="{% url 'Home' %}" class="current">Home</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            <a href="{% url 'main' %}" class="nav-cta">Browse Cars</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-inner">
+
+            <div class="hero-slideshow" id="heroSlideshow">
+
+                {% for car in cars %}
+                <div class="hero-slide {% if forloop.first %}active{% endif %}">
+
+                    <div class="hero-content">
+                        <div class="hero-eyebrow">✦ Featured this week</div>
+
+                        <h1>{{ car.brand }} <span>{{ car.model }}</span></h1>
+                        <p>{{ car.description }}</p>
+
+                        <div class="hero-actions">
+                            <a href="#"><button class="btn-primary">Explore {{ car.model }}</button></a>
+                            <a href="#"><button class="btn-ghost">View Details</button></a>
+                        </div>
+
+                        <div class="hero-stats">
+                            <div>
+                                <div class="stat-num">${{ car.price }}</div>
+                                <div class="stat-label">Price</div>
+                            </div>
+                            <div>
+                                <div class="stat-num">{{ car.year }}</div>
+                                <div class="stat-label">Year</div>
+                            </div>
+                            <div>
+                                <div class="stat-num">{{ car.color }}</div>
+                                <div class="stat-label">Color</div>
+                            </div>
+                        </div>
+                        <!-- dots get moved in here by JS, right after hero-stats -->
+                    </div>
+
+                    <div class="hero-visual">
+                        <div class="float-card main">
+                            <div class="car-img">
+                                {% if car.cover_image %}
+                                    <img src="{{ car.cover_image.url }}" alt="{{ car.brand }} {{ car.model }}">
+                                {% endif %}
+                            </div>
+                            <div class="car-name">{{ car.brand }} {{ car.model }}</div>
+                            <span class="meta-pill">{{ car.year }}</span>
+                            <span class="meta-pill">{{ car.color }}</span>
+                        </div>
+
+                        <div class="float-card badge">
+                            <div class="badge-icon">✓</div>
+                            <div>
+                                <div class="badge-title">Verified Listing</div>
+                                <div class="badge-sub">Inspected &amp; ready</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+            <!-- single shared dots bar — JS relocates it into the active hero-content -->
+            <div class="hero-dots" id="heroDots">
+                {% for car in cars %}
+                    <button class="hero-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"></button>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+    <!-- LOGO STRIP -->
+    <div class="logo-strip">
+        <div class="section-inner">
+            <span class="strip-label">Trusted by teams at</span>
+            <div class="logos">
+                <span>Northline</span>
+                <span>Ferro</span>
+                <span>Vantage</span>
+                <span>Colby &amp; Co.</span>
+                <span>Meridian</span>
+            </div>
+        </div>
+    </div>
+
+    <!--  FEATURED CARS  -->  
+    <section id="features">
+        <div class="section-inner">
+            <div class="eyebrow">Why Drive X</div>
+            <h2 class="section-title">Everything you need, nothing you don't</h2>
+            <p class="section-sub">A car marketplace built around trust, speed, and clear pricing — from first search to signed paperwork.</p>
+
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon">✓</div>
+                    <h4>Verified Listings</h4>
+                    <p>Every car is inspected and every seller is identity-checked before it goes live.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">$</div>
+                    <h4>Transparent Pricing</h4>
+                    <p>No hidden dealer fees. The price you see includes everything you'll pay.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">⚡</div>
+                    <h4>Fast Reservations</h4>
+                    <p>Reserve a car online in minutes and lock in your price while you arrange financing.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">⇄</div>
+                    <h4>Easy Comparisons</h4>
+                    <p>Filter by price, mileage, and year to compare similar cars side by side.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🛡</div>
+                    <h4>Buyer Protection</h4>
+                    <p>Every purchase is covered by our 7-day return window and title guarantee.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">☎</div>
+                    <h4>Real Support</h4>
+                    <p>A human team is available by chat and phone through every step of the purchase.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- bg image applied here only -->
+    <section style="
+        background: linear-gradient(rgba(10,10,15,0.75), rgba(10,10,15,0.85)), url('{% static "img/bg/b1.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-top:1px solid #1e293b;
+        border-bottom:1px solid #1e293b;
+    ">
+        <div class="section-inner">
+            <div class="eyebrow">LISETD</div>
+            <h2 class="section-title">Popular right now</h2>
+            <p class="section-sub">a few cars that are getting the most attention this week</p>
+
+            <div class="car-grid">
+
+                {% for car in cars %}
+                <div class="car-card">
+
+                    <div class="car-img">
+                        {% if car.cover_image %}
+                            <img src="{{ car.cover_image.url }}" alt="{{ car.brand }} {{ car.model }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="car-body">
+                        <div class="car-name">{{ car.brand }} {{ car.model }} · {{ car.year }}</div>
+
+                        <div class="car-meta">
+                            <span class="meta-pill price">${{ car.price }}</span>
+                            <span class="meta-pill">{{ car.year }}</span>
+                            <span class="meta-pill">{{ car.color }}</span>
+                        </div>
+
+                        <a href="{% url 'main' %}"><button class="buy-btn">get in touch</button></a>
+                        <a href="{% url 'main' %}" class="browse-link">View all listings →</a>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section>
+        <div class="section-inner">
+            <div class="testi-wrap">
+                <div class="testi-avatar"></div>
+                <div>
+                    <p class="testi-quote">"I found and reserved my car in one evening. The whole process — search, compare, deposit — took less time than a single dealership visit."</p>
+                    <div class="testi-name">Maria Chen</div>
+                    <div class="testi-role">Bought a 2023 RAV4 in Austin, TX</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BAND -->
+    <section class="cta-band">
+        <div class="section-inner">
+            <h2>Ready to find your car?</h2>
+            <p>Create a free account and start browsing verified listings today.</p>
+            <div class="hero-actions">
+                <a href="{% url 'main' %}"><button class="btn-primary">Browse Cars</button></a>
+                <a href="{% url 'contact' %}"><button class="btn-ghost">Talk to Us</button></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="brand">Drive<span>X</span></div>
+                <p>A car marketplace built on verified listings, clear pricing, and real support — from search to keys in hand.</p>
+            </div>
+            <div class="footer-col">
+                <div class="col-title">Product</div>
+                <a href="#">Browse Cars</a>
+                <a href="#">Features</a>
+                <a href="#">Dashboard</a>
+            </div>
+            <div class="footer-col">
+                <div class="col-title">Company</div>
+                <a href="{% url 'contact' %}">Contact</a>
+                <a href="#">About</a>
+                <a href="#">Careers</a>
+            </div>
+            <div class="footer-col">
+                <div class="col-title">Legal</div>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Drive X. All rights reserved.</span>
+            <span>Made for people who'd rather not visit a dealership.</span>
+        </div>
+    </footer>
+
+    
+    <script>
+
+        const slides  = document.querySelectorAll(".hero-slide");
+        const dots    = document.querySelectorAll(".hero-dot");
+        const dotsBar = document.getElementById("heroDots");
+        let index = 0;
+
+        function placeDots(i) {
+            const content = slides[i].querySelector(".hero-content");
+            content.appendChild(dotsBar);   // moves the single dots bar, doesn't clone it
+        }
+
+        function goTo(i) {
+            slides[index].classList.remove("active");
+            dots[index].classList.remove("active");
+            index = i;
+            slides[index].classList.add("active");
+            dots[index].classList.add("active");
+            placeDots(index);
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener("click", () => goTo(Number(dot.dataset.index)));
+        });
+
+        placeDots(index); // put dots under the first slide's text on load
+
+        if (slides.length > 1) {
+            setInterval(function () {
+                let next = index + 1;
+                if (next >= slides.length) next = 0;
+                goTo(next);
+            }, 5000);
+        }
+
+        // pop up 
+        setTimeout(function(){
+            document.getElementById("toast").classList.remove("show");
+        }, 6000 )
+          
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare</title>
+    <style>
+        .compare-table-wrap{
+            overflow-x:auto;
+            border-radius:18px;
+            border:1px solid #1f2937;
+            background:#111827;
+            box-shadow:0 20px 40px rgba(0,0,0,.35);
+        }
+
+        .compare-table{
+            width:100%;
+            border-collapse:collapse;
+            min-width:850px;
+            overflow:hidden;
+        }
+
+        .compare-table th,
+        .compare-table td{
+            padding:18px 22px;
+            border-bottom:1px solid #1f2937;
+            transition:.25s;
+        }
+
+        /* Header */
+
+        .compare-table th{
+            background:#0b1220;
+            color:#fff;
+            font-size:.95rem;
+            font-weight:700;
+            text-align:center;
+            position:sticky;
+            top:0;
+            z-index:2;
+        }
+
+        /* Left Column */
+
+        .compare-table td:first-child,
+        .compare-table th:first-child{
+            width:170px;
+            background:#0b1220;
+            color:#94a3b8;
+            text-transform:uppercase;
+            letter-spacing:.08em;
+            font-size:.72rem;
+            font-weight:600;
+            position:sticky;
+            left:0;
+            z-index:3;
+        }
+
+        /* Values */
+
+        .compare-table td:not(:first-child){
+            text-align:center;
+            color:#e2e8f0;
+        }
+
+        /* Zebra */
+
+        .compare-table tr:nth-child(even){
+            background:#141c2d;
+        }
+
+        /* Hover */
+
+        .compare-table tr:hover td:not(:first-child){
+            background:rgba(59,130,246,.12);
+        }
+
+        /* Rounded */
+
+        .compare-table tr:first-child th:first-child{
+            border-top-left-radius:18px;
+        }
+
+        .compare-table tr:first-child th:last-child{
+            border-top-right-radius:18px;
+        }
+
+        /* Better numbers */
+
+        .compare-table td{
+            font-weight:500;
+        }
+
+        /* Nice scrollbar */
+
+        .compare-table-wrap::-webkit-scrollbar{
+            height:8px;
+        }
+
+        .compare-table-wrap::-webkit-scrollbar-thumb{
+            background:#334155;
+            border-radius:20px;
+        }
+
+        .compare-table-wrap::-webkit-scrollbar-thumb:hover{
+            background:#475569;
+        }
+
+        .car-img {
+            width: 100%;
+            max-width: 140px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto 8px;
+        }
+
+        .car-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s;
+        }
+
+        .car-img:hover img {
+            transform: scale(1.06);
+        }
+
+        .car-brand {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .car-model {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .car-price {
+            font-size: 0.9rem;
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .remove-btn {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: rgba(239, 68, 68, 0.22);
+        }
+
+        .highlight-max {
+            background: rgba(34, 197, 94, 0.15) !important;
+            color: #4ade80;
+            font-weight: 700;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="compare-table-wrap">
+    <table class="compare-table">
+
+        <tr>
+            <th>Specification</th>
+
+            {% for car in cars %}
+            <th>
+                {% if car.cover_image %}
+                    <div class="car-img">
+                        <img src="{{ car.cover_image.url }}" class="compare-image" alt="{{ car.brand }}">
+                    </div>
+                {% endif %}
+
+                <div class="car-brand">{{ car.brand }}</div>
+                <div class="car-model">{{ car.model }}</div>
+                <div class="car-price">${{ car.price }}</div>
+
+                <button class="remove-btn" onclick="removeCar({{ car.id }})">✕ Remove</button>
+            </th>
+            {% endfor %}
+        </tr>
+
+        <tr>
+
+            <td>Price</td>
+            {% for car in cars %}
+                <td {% if car.price == max_values.price %}class="highlight-max"{% endif %}>${{ car.price }}</td>
+            {% endfor %}
+
+        </tr>
+
+        <tr>
+
+            <td>Year</td>
+            {% for car in cars %}
+                <td {% if car.year == max_values.year %}class="highlight-max"{% endif %}>{{ car.year }}</td>
+            {% endfor %}
+
+        </tr>
+
+        <tr>
+
+            <td>Horsepower</td>
+            {% for car in cars %}
+                <td {% if car.horsepower == max_values.horsepower %}class="highlight-max"{% endif %}>{{ car.horsepower }} HP</td>
+            {% endfor %}
+
+        </tr>
+
+        <tr>
+
+            <td>Mileage</td>
+            {% for car in cars %}
+                <td {% if car.mileage == max_values.mileage %}class="highlight-max"{% endif %}>{{ car.mileage }} km</td>
+            {% endfor %}
+
+        </tr>
+
+        <tr>
+            <td>Color</td>
+            {% for car in cars %}<td>{{ car.color }}</td>{% endfor %}
+        </tr>
+
+        <tr>
+            <td>Fuel</td>
+            {% for car in cars %}<td>{{ car.fuel }}</td>{% endfor %}
+        </tr>
+
+        <tr>
+            <td>Transmission</td>
+            {% for car in cars %}<td>{{ car.transmission }}</td>{% endfor %}
+        </tr>
+
+    </table>
+</div>
+
+<script>
+function removeCar(id) {
+    const params = new URLSearchParams(window.location.search);
+    const ids = params.get('ids').split(',').filter(i => i != id);
+
+    if (ids.length === 0) {
+        window.location.href = "{% url 'main' %}";
+    } else {
+        params.set('ids', ids.join(','));
+        window.location.search = params.toString();
+    }
+}
+</script>
+
+</body>
+</html>

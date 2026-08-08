@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Drive X</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: #e2e8f0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── NAVBAR ── */
+.nav-bar {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    border-bottom: 1px solid #1e293b;
+    flex-shrink: 0;
+
+    background: linear-gradient(90deg, #020617, #0f2447, #1e3a5f, #0f2447, #020617);
+    background-size: 400% 400%;
+    animation: navGradient 12s ease infinite;
+    backdrop-filter: blur(12px);
+}
+
+@keyframes navGradient {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-right: auto;
+}
+.brand span { color: #3b82f6; }
+
+.top-nav a {
+    color: #94a3b8;
+    text-decoration: none;
+    margin-left: 18px;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+.top-nav a:hover { color: #fff; }
+.top-nav a.current { color: #fff; }
+
+/* ── TOGGLE BUTTON ── */
+.toggle-btn {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+}
+.toggle-btn:hover { background: #1e293b; }
+
+.toggle-btn span {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    background: #94a3b8;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.toggle-btn.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.toggle-btn.open span:nth-child(2) { opacity: 0; }
+.toggle-btn.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* ── LAYOUT ── */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+.side-bar {
+    width: 220px;
+    background: #0d1117;
+    border-right: 1px solid #1e293b;
+    flex-shrink: 0;
+    padding: 20px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+.side-bar.hidden {
+    width: 0;
+    opacity: 0;
+    border-right: none;
+}
+
+.side-bar .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #475569;
+    padding: 0 20px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+
+.side-bar ul { list-style: none; }
+.side-bar ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.875rem;
+    border-left: 2px solid transparent;
+    transition: all 0.18s;
+    white-space: nowrap;
+}
+.side-bar ul li a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.04);
+    border-left-color: #3b82f6;
+}
+.side-bar ul li.active a {
+    color: #fff;
+    background: rgba(30, 58, 95, 0.2);
+    border-left-color: #3b82f6;
+}
+
+/* ── SCROLL AREA ── */
+.scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 24px;
+}
+.scroll-area::-webkit-scrollbar { width: 5px; }
+.scroll-area::-webkit-scrollbar-track { background: transparent; }
+.scroll-area::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+
+/* ── PAGE HEADER — bigger heading, subtitle, icon ── */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.page-header-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1e3a5f, #0f2447);
+    border: 1px solid #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.page-heading {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #f8fafc;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.page-sub {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* ── CONTACT LAYOUT — form gets more weight than info card ── */
+.contact-wrap {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 18px;
+    max-width: 1080px;
+}
+
+@media (max-width: 760px) {
+    .contact-wrap { grid-template-columns: 1fr; }
+}
+
+/* ── FORM CARD ── */
+.form-card {
+    background: #111827;
+    border-radius: 14px;
+    border: 1px solid #1e293b;
+    padding: 30px;
+}
+
+.form-card h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 22px;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+@media (max-width: 520px) {
+    .field-row { grid-template-columns: 1fr; }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.field label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+/* ── INPUT WRAPPER — icon inside the field ── */
+.input-wrap {
+    position: relative;
+}
+
+.input-wrap .field-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: #475569;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.input-wrap textarea ~ .field-icon {
+    top: 16px;
+    transform: none;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid #1e293b;
+    border-radius: 9px;
+    padding: 13px 14px 13px 38px;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.field input:focus ~ .field-icon,
+.field textarea:focus ~ .field-icon {
+    color: #3b82f6;
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 140px;
+    padding-top: 13px;
+}
+
+.field.has-error input,
+.field.has-error textarea {
+    border-color: #f87171;
+}
+
+.error-text {
+    font-size: 0.75rem;
+    color: #f87171;
+    margin-top: 6px;
+    display: none;
+}
+
+.field.has-error .error-text { display: block; }
+
+.char-counter {
+    align-self: flex-end;
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+.char-counter.near-limit { color: #facc15; }
+.char-counter.at-limit { color: #f87171; }
+
+/* ── SEND BUTTON ── */
+.send-btn {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.send-btn:hover {
+    opacity: 0.92;
+    transform: scale(1.01);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+}
+.send-btn:active { transform: scale(0.98); }
+
+.send-btn.loading {
+    opacity: 0.7;
+    cursor: default;
+    pointer-events: none;
+}
+
+.send-btn .send-icon { font-size: 1rem; }
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+}
+.send-btn.loading .spinner { display: inline-block; }
+.send-btn.loading .send-icon,
+.send-btn.loading .send-label { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SUCCESS CARD ── */
+.success-card {
+    display: none;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+}
+.success-card.show { display: block; }
+
+.success-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.success-card h3 {
+    font-size: 1.05rem;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+}
+
+.success-card p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 18px;
+}
+
+.success-card button {
+    background: transparent;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+.success-card button:hover { color: #fff; border-color: #3b82f6; }
+
+/* ── INFO CARD ── */
+.info-card {
+    background: #111827;
+    border-radius: 14px;
+    border: 1px solid #1e293b;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.info-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.info-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #1e3a5f;
+    color: #60a5fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.info-text .label {
+    font-size: 0.7rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+}
+
+.info-text .value {
+    font-size: 0.875rem;
+    color: #e2e8f0;
+}
+
+.meta-pill {
+    font-size: 0.7rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.hours-divider {
+    border-top: 1px solid #1e293b;
+    padding-top: 16px;
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="nav-bar">
+    <button class="toggle-btn" id="togglebtn" aria-label="Toggle sidebar" aria-expanded="true">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div class="brand">Drive<span>X</span></div>
+    <nav class="top-nav">
+        <a href="{% url 'Home' %}">Home</a>
+        <a href="{% url 'contact' %}" class="current">Contact</a>
+    </nav>
+</header>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="side-bar" id="sidebar">
+        <div class="section-label">Menu</div>
+        <ul>
+            <li><a href="{% url 'main' %}">Listing</a></li>
+            <li><a href="{% url 'Home' %}">About</a></li>
+            <li><a href="#"></a></li>
+        </ul>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="scroll-area">
+
+        <div class="page-header">
+            <div class="page-header-icon">✉</div>
+            <div>
+                <h2 class="page-heading">Get in Touch</h2>
+                <p class="page-sub">Have a question about a listing? Our team usually replies within one business day.</p>
+            </div>
+        </div>
+
+        <div class="contact-wrap">
+
+            <!-- FORM -->
+            <div class="form-card" id="formCard">
+                <h3>Send a Message</h3>
+                <form method="post" action="#" id="contactForm" novalidate>
+                    {% csrf_token %}
+
+                    <div class="field-row">
+                        <div class="field" id="firstNameField">
+                            <label for="first_name">First Name</label>
+                            <div class="input-wrap">
+                                <input type="text" id="first_name" name="first_name" placeholder="Jane" required>
+                                <span class="field-icon">👤</span>
+                            </div>
+                            <span class="error-text">Please enter your first name.</span>
+                        </div>
+                        <div class="field" id="lastNameField">
+                            <label for="last_name">Last Name</label>
+                            <div class="input-wrap">
+                                <input type="text" id="last_name" name="last_name" placeholder="Doe" required>
+                                <span class="field-icon">👤</span>
+                            </div>
+                            <span class="error-text">Please enter your last name.</span>
+                        </div>
+                    </div>
+
+                    <div class="field" id="emailField">
+                        <label for="email">Email</label>
+                        <div class="input-wrap">
+                            <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+                            <span class="field-icon">✉</span>
+                        </div>
+                        <span class="error-text">Please enter a valid email address.</span>
+                    </div>
+
+                    <div class="field" id="subjectField">
+                        <label for="subject">Subject</label>
+                        <div class="input-wrap">
+                            <input type="text" id="subject" name="subject" placeholder="What's this about?">
+                            <span class="field-icon">🏷</span>
+                        </div>
+                    </div>
+
+                    <div class="field" id="messageField">
+                        <label for="message">Message</label>
+                        <div class="input-wrap">
+                            <textarea id="message" name="message" maxlength="1000" placeholder="Tell us how we can help..." required></textarea>
+                            <span class="field-icon">💬</span>
+                        </div>
+                        <span class="error-text">Please enter a message.</span>
+                        <span class="char-counter" id="charCounter">0 / 1000</span>
+                    </div>
+
+                    <button type="submit" class="send-btn" id="sendBtn">
+                        <span class="send-icon">➤</span>
+                        <span class="send-label">Send Message</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- SUCCESS CARD (shown in place of the form after send) -->
+            <div class="success-card" id="successCard">
+                <div class="success-icon">✓</div>
+                <h3>Message sent</h3>
+                <p>Thanks for reaching out — we'll get back to you within one business day.</p>
+                <button type="button" id="sendAnotherBtn">Send another message</button>
+            </div>
+
+            <!-- INFO -->
+            <div class="info-card">
+                <h3>Contact Info</h3>
+
+                <div class="info-item">
+                    <div class="info-icon">✉</div>
+                    <div class="info-text">
+                        <div class="label">Email</div>
+                        <div class="value">support@drivex.com</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">☎</div>
+                    <div class="info-text">
+                        <div class="label">Phone</div>
+                        <div class="value">+1 (555) 012-3456</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">⚲</div>
+                    <div class="info-text">
+                        <div class="label">Office</div>
+                        <div class="value">128 Harbor Drive, Suite 4</div>
+                        <span class="meta-pill">San Francisco, CA</span>
+                    </div>
+                </div>
+
+                <div class="info-item hours-divider">
+                    <div class="info-icon">🕐</div>
+                    <div class="info-text">
+                        <div class="label">Hours</div>
+                        <div class="value">Mon–Fri, 9:00 AM – 6:00 PM</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+const btn = document.getElementById('togglebtn');
+const sidebar = document.getElementById('sidebar');
+let open = true;
+
+btn.onclick = function () {
+    open = !open;
+    sidebar.classList.toggle('hidden', !open);
+    btn.classList.toggle('open', !open);
+    btn.setAttribute('aria-expanded', open);
+};
+
+/* ── Character counter ── */
+const messageInput = document.getElementById('message');
+const charCounter = document.getElementById('charCounter');
+
+messageInput.addEventListener('input', function () {
+    const len = messageInput.value.length;
+    charCounter.textContent = len + ' / 1000';
+    charCounter.classList.toggle('near-limit', len >= 800 && len < 1000);
+    charCounter.classList.toggle('at-limit', len >= 1000);
+});
+
+/* ── Inline validation + fake send flow ── */
+const form = document.getElementById('contactForm');
+const sendBtn = document.getElementById('sendBtn');
+const formCard = document.getElementById('formCard');
+const successCard = document.getElementById('successCard');
+const sendAnotherBtn = document.getElementById('sendAnotherBtn');
+
+const fields = [
+    { id: 'first_name', wrapId: 'firstNameField', validate: v => v.trim().length > 0 },
+    { id: 'last_name', wrapId: 'lastNameField', validate: v => v.trim().length > 0 },
+    { id: 'email', wrapId: 'emailField', validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    { id: 'message', wrapId: 'messageField', validate: v => v.trim().length > 0 },
+];
+
+form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    let valid = true;
+    fields.forEach(f => {
+        const input = document.getElementById(f.id);
+        const wrap = document.getElementById(f.wrapId);
+        const ok = f.validate(input.value);
+        wrap.classList.toggle('has-error', !ok);
+        if (!ok) valid = false;
+    });
+
+    if (!valid) return;
+
+    // Swap in loading state, then success card.
+    // Replace this block with the real form.submit() / fetch() call to your Django view.
+    sendBtn.classList.add('loading');
+
+    setTimeout(function () {
+        sendBtn.classList.remove('loading');
+        formCard.style.display = 'none';
+        successCard.classList.add('show');
+    }, 900);
+});
+
+sendAnotherBtn.addEventListener('click', function () {
+    form.reset();
+    charCounter.textContent = '0 / 1000';
+    charCounter.classList.remove('near-limit', 'at-limit');
+    fields.forEach(f => document.getElementById(f.wrapId).classList.remove('has-error'));
+    successCard.classList.remove('show');
+    formCard.style.display = 'block';
+});
+</script>
+
+</body>
+</html>
