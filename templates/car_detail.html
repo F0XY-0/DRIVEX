@@ -307,14 +307,14 @@
     <header class="nav-bar">
         <div class="brand">Drive<span>X</span></div>
         <nav class="top-nav">
-            <a href="{% url 'Home' %}">Home</a>
-            <a href="{% url 'main' %}">Browse Cars</a>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'car_list' %}">Browse Cars</a>
             <a href="{% url 'contact' %}">Contact</a>
         </nav>
     </header>
 
     <div class="detail-wrap">
-        <a href="{% url 'main' %}" class="back-link">← Back to listings</a>
+        <a href="{% url 'car_list' %}" class="back-link">← Back to listings</a>
 
         <div class="detail-grid">
             <div class="detail-img-wrap">

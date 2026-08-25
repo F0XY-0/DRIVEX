@@ -1,87 +1,101 @@
-from django.db.models import Min , Max , Count 
-from django.shortcuts import render
+from django.db.models import Min , Max , Count
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView, TemplateView
 from random import choice
 from .models import Car
-from django.shortcuts import render , get_object_or_404
+
+class ContactView(TemplateView):
+    template_name = "contact.html"
+
+class HomeView(ListView):
+    model = Car
+    template_name = "home.html"
+    context_object_name = "cars"
+
+    def get_queryset(self):
+        return Car.objects.order_by("?")[:5]   
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cars = context["cars"]
+        context["hero_car"] = choice(cars) if cars else None
+        return context
 
 
-# Create your views here.
-def home(request) : 
-    cars = Car.objects.all()
-    return render(request , "Main.html" , {"cars" : cars})
+class CarListView(ListView):
+    model = Car
+    template_name = "Main.html"
+    context_object_name = "cars"
 
-def contact(request) : 
-    return render (request , "contact.html")
+    def get_queryset(self):
+        queryset = Car.objects.all()
 
-def main(request) :
-    cars = Car.objects.all()
+        self.price_min = self.request.GET.get('price_min')
+        self.price_max = self.request.GET.get('price_max')
+        self.hp_min = self.request.GET.get('hp_min')
+        self.hp_max = self.request.GET.get('hp_max')
+        self.color = self.request.GET.get('color')
 
-    price_min = request.GET.get('price_min')
-    price_max = request.GET.get('price_max')
-    hp_min = request.GET.get('hp_min')
-    hp_max = request.GET.get('hp_max')
-    color = request.GET.get('color')
+        if self.price_min:
+            queryset = queryset.filter(price__gte=self.price_min)
+        if self.price_max:
+            queryset = queryset.filter(price__lte=self.price_max)
+        if self.hp_min:
+            queryset = queryset.filter(horsepower__gte=self.hp_min)
+        if self.hp_max:
+            queryset = queryset.filter(horsepower__lte=self.hp_max)
+        if self.color:
+            queryset = queryset.filter(color__iexact=self.color)
 
-    # conds 
+        return queryset
 
-    if price_min:
-        cars = cars.filter(price__gte=price_min)
-    if price_max:
-        cars = cars.filter(price__lte=price_max)
-    if hp_min:
-        cars = cars.filter(horsepower__gte=hp_min)
-    if hp_max:
-        cars = cars.filter(horsepower__lte=hp_max)
-    if color:
-        cars = cars.filter(color__iexact=color)  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    colors = Car.objects.values_list('color', flat=True).distinct().order_by('color')
+        context["colors"] = Car.objects.values_list(
+            'color', flat=True
+        ).distinct().order_by('color')
 
-    stats = Car.objects.aggregate(
-        total=Count('id'),
-        min_price=Min('price'),
-        max_price=Max('price'),
-    )
+        context["stats"] = Car.objects.aggregate(
+            total=Count('id'),
+            min_price=Min('price'),
+            max_price=Max('price'),
+        )
 
-    context = {
-        'cars': cars,
-        'colors': colors,
-        'stats': stats,
-        'filters': {
-            'price_min': price_min or '',
-            'price_max': price_max or '',
-            'hp_min': hp_min or '',
-            'hp_max': hp_max or '',
-            'color': color or '',
+        context["filters"] = {
+            'price_min': self.price_min or '',
+            'price_max': self.price_max or '',
+            'hp_min': self.hp_min or '',
+            'hp_max': self.hp_max or '',
+            'color': self.color or '',
         }
-    }
-    return render(request, 'Main.html', context)  
 
-def Home(request) :
-    cars = Car.objects.order_by("?")[:5]
+        return context
 
-    hero_car = choice(cars) if cars else None
 
-    return render (request , "home.html" ,{
-        "hero_car" : hero_car , 
-        "cars" : cars ,
-    })
+class CarDetailView(DetailView):
+    model = Car
+    template_name = "car_detail.html"
+    context_object_name = "car"
+    pk_url_kwarg = "pk"
 
-def compare(request) : 
-    ids = request.GET.get('ids' , '') 
-    id_list = [i for i in ids.split(',') if i.isdigit()]
-    cars = Car.objects.filter(id__in = id_list)
 
-    max_values = {
-        'price' : max((c.price for c in cars) , default=None) , 
-        'year': max((c.year for c in cars), default=None) ,
-        'horsepower': max((c.horsepower for c in cars), default=None) ,
-        'mileage': max((c.mileage for c in cars), default=None) ,
-    }
+class CompareView(TemplateView):
+    template_name = "compare.html"
 
-    return render(request , 'compare.html' , {'cars' : cars , 'max_values': max_values})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-def car_detail(request , pk):
-    car = get_object_or_404(Car , pk = pk ) 
-    return render (request , 'car_detail.html' , {'car' : car})
+        ids = self.request.GET.get('ids', '')
+        id_list = [i for i in ids.split(',') if i.isdigit()]
+        cars = Car.objects.filter(id__in=id_list)
 
+        context["cars"] = cars
+        context["max_values"] = {
+            'price': max((c.price for c in cars), default=None),
+            'year': max((c.year for c in cars), default=None),
+            'horsepower': max((c.horsepower for c in cars), default=None),
+            'mileage': max((c.mileage for c in cars), default=None),
+        }
+
+        return context

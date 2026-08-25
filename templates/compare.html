@@ -253,7 +253,7 @@ function removeCar(id) {
     const ids = params.get('ids').split(',').filter(i => i != id);
 
     if (ids.length === 0) {
-        window.location.href = "{% url 'main' %}";
+        window.location.href = "{% url 'car_list' %}";
     } else {
         params.set('ids', ids.join(','));
         window.location.search = params.toString();

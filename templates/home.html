@@ -775,9 +775,9 @@
         <div class="brand">Drive<span>X</span></div>
 
         <nav class="top-nav">
-            <a href="{% url 'Home' %}" class="current">Home</a>
+            <a href="{% url 'home' %}" class="current">Home</a>
             <a href="{% url 'contact' %}">Contact</a>
-            <a href="{% url 'main' %}" class="nav-cta">Browse Cars</a>
+            <a href="{% url 'car_list' %}" class="nav-cta">Browse Cars</a>
         </nav>
     </header>
 
@@ -943,8 +943,8 @@
                             <span class="meta-pill">{{ car.color }}</span>
                         </div>
 
-                        <a href="{% url 'main' %}"><button class="buy-btn">get in touch</button></a>
-                        <a href="{% url 'main' %}" class="browse-link">View all listings →</a>
+                        <a href="{% url 'car_list' %}"><button class="buy-btn">get in touch</button></a>
+                        <a href="{% url 'car_list' %}" class="browse-link">View all listings →</a>
                     </div>
 
                 </div>
@@ -974,7 +974,7 @@
             <h2>Ready to find your car?</h2>
             <p>Create a free account and start browsing verified listings today.</p>
             <div class="hero-actions">
-                <a href="{% url 'main' %}"><button class="btn-primary">Browse Cars</button></a>
+                <a href="{% url 'car_list' %}"><button class="btn-primary">Browse Cars</button></a>
                 <a href="{% url 'contact' %}"><button class="btn-ghost">Talk to Us</button></a>
             </div>
         </div>

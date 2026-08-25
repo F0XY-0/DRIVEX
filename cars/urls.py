@@ -1,11 +1,12 @@
 from django.urls import path
+from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'), # landing/root — currently unrouted, TODO before deploy
-    path('contact/',views.contact , name="contact") , # contact form page
-    path('Home/',views.Home , name="Home") , # hero landing page (bug: renders "Home.html", file is "home.html") 
-    path('main/',views.main , name="main") , # full car listing
-    path('compare/',views.compare , name='compare') , 
-    path('car/<int:pk>' , views.car_detail , name='car_detail') , 
+    path('', views.HomeView.as_view(), name='home'),
+    path('cars/', views.CarListView.as_view(), name='car_list'),
+    path('car/<int:pk>/', views.CarDetailView.as_view(), name='car_detail'),
+    path('compare/', views.CompareView.as_view(), name='compare'),
+    path('contact/', views.ContactView.as_view(), name='contact'),
+    path('mainAdmin/' , admin.site.urls)
 ]

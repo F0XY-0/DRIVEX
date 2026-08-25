@@ -438,7 +438,7 @@
         <div class="brand">Drive<span>X</span></div>
 
         <nav class="top-nav">
-            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'contact' %}">Contact</a>
         </nav>
     </header>
@@ -450,7 +450,7 @@
             
             <div class="secction-label">MENU</div>
             <ul>
-                <li class="active"><a href="{% url 'main' %}">Listing</a></li>
+                <li class="active"><a href="{% url 'car_list' %}">Listing</a></li>
                 <li><a href="{% url 'contact' %}">Contact</a></li>
             </ul>
 
@@ -480,7 +480,7 @@
 
                 <button type="submit">Search</button>
                 {% if filters.price_min or filters.price_max or filters.hp_min or filters.hp_max or filters.color %}
-                    <a href="{% url 'main' %}" class="clear-link">Clear filters</a>
+                    <a href="{% url 'car_list' %}" class="clear-link">Clear filters</a>
                 {% endif %}
             </form>
         </aside>
