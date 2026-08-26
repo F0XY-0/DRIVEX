@@ -6,7 +6,6 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG' , default = False , cast = bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS' , default = '' , cast = Csv())
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,7 +78,11 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# for local host this part mostly works CSRF COOKIES , COOKIES 
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = 3600  # adjust as makes sense
+SESSION_COOKIE_SECURE = True
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1  # 1_h lock out 
 AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
@@ -90,3 +93,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB, matches validator
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024

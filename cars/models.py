@@ -1,4 +1,5 @@
 from django.db import models
+from .validator import validate_IMG_file
 
 class Car(models.Model):
     brand = models.CharField(max_length=100)
@@ -11,7 +12,7 @@ class Car(models.Model):
     color = models.CharField(max_length=50)
     horsepower = models.PositiveIntegerField()
     description = models.TextField()
-    cover_image = models.ImageField(upload_to="cars/")
+    cover_image = models.ImageField(upload_to="cars/" , validators=[validate_IMG_file])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
