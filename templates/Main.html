@@ -429,7 +429,7 @@
 
     <!-- NAVBAR -->
     <header class="nav-bar">
-        <button class="toggle-btn" id="togglebtn" aria-label="Toggle sidebar" aria-expanded="true">
+        <button class="toggle-btn open" id="togglebtn" aria-label="Toggle sidebar" aria-expanded="false">
             <span></span>
             <span></span>
             <span></span>
@@ -445,8 +445,8 @@
 
     <div class="layout">
 
-        <!-- SIDEBAR -->
-        <aside class="side-bar" id="sidebar">
+        <!-- SIDEBAR: starts hidden by default -->
+        <aside class="side-bar hidden" id="sidebar">
             
             <div class="secction-label">MENU</div>
             <ul>
@@ -461,7 +461,7 @@
                 <label>price</label>
                 <div class="range-row">
                     <input type="number" name="price_min" placeholder="Min" value="{{ filter.price_min }}">
-                    <input type="number" name="price_max" placeholder="Max" value="{{ filter.price_max }}">
+                    <input type="number" name="price_max" placeholder="Max" value="{{ filters.price_max }}">
                 </div>
 
                 <label>Horsepower</label>
@@ -545,7 +545,7 @@
     <script>
         const btn = document.getElementById('togglebtn');
         const sidebar = document.getElementById('sidebar');
-        let open = true;
+        let open = false;
 
         btn.onclick = function () {
             open = !open;

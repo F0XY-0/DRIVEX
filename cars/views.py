@@ -19,7 +19,10 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         cars = context["cars"]
         context["hero_car"] = choice(cars) if cars else None
+        context["colors"] = Car.objects.values_list('color', flat=True).distinct().order_by('color')
         return context
+
+    
 
 
 class CarListView(ListView):

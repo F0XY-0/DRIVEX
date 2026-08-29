@@ -26,6 +26,17 @@
             text-decoration: none; 
         }
 
+        /* Visible focus ring for keyboard navigation — without this,
+           tabbing through the page gives no indication of where you are */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
         /* ── NAVBAR ── */
         .nav-bar {
             height: 60px;
@@ -314,6 +325,61 @@
             border-color: #3b82f6;
             width: 22px;
             border-radius: 4px;
+        }
+
+        /* ── QUICK SEARCH ── */
+        .quick-search {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 36px;
+            padding: 18px 20px;
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+        }
+
+        .qs-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 150px;
+        }
+
+        .qs-field label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .qs-field select,
+        .qs-field input {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        .qs-field select:focus,
+        .qs-field input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .qs-submit {
+            padding: 10px 22px;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            .quick-search { flex-direction: column; align-items: stretch; }
+            .qs-field { min-width: 0; }
         }
 
         .float-card {
@@ -724,6 +790,14 @@
 
         .footer-col a:hover { color: #fff; }
 
+        .footer-col .soon {
+            display: block;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 10px;
+            cursor: default;
+        }
+
         .footer-bottom {
             max-width: 1080px;
             margin: 0 auto;
@@ -797,8 +871,8 @@
                         <p>{{ car.description }}</p>
 
                         <div class="hero-actions">
-                            <a href="#"><button class="btn-primary">Explore {{ car.model }}</button></a>
-                            <a href="#"><button class="btn-ghost">View Details</button></a>
+                            <a href="{% url 'car_detail' car.id %}"><button class="btn-primary">Explore {{ car.model }}</button></a>
+                            <a href="{% url 'car_detail' car.id %}"><button class="btn-ghost">View Details</button></a>
                         </div>
 
                         <div class="hero-stats">
@@ -831,7 +905,7 @@
                         </div>
 
                         <div class="float-card badge">
-                            <div class="badge-icon">✓</div>
+                            <div class="badge-icon" aria-hidden="true">✓</div>
                             <div>
                                 <div class="badge-title">Verified Listing</div>
                                 <div class="badge-sub">Inspected &amp; ready</div>
@@ -850,6 +924,25 @@
                     <button class="hero-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"></button>
                 {% endfor %}
             </div>
+
+            <!-- QUICK SEARCH: lets a visitor jump straight into filtered
+                 results instead of landing on the unfiltered listing -->
+            <form class="quick-search" action="{% url 'car_list' %}" method="get">
+                <div class="qs-field">
+                    <label for="qs-color">Color</label>
+                    <select id="qs-color" name="color">
+                        <option value="">Any color</option>
+                        {% for c in colors %}
+                            <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="qs-field">
+                    <label for="qs-price-max">Max price</label>
+                    <input id="qs-price-max" type="number" name="price_max" placeholder="e.g. 20000" min="0">
+                </div>
+                <button type="submit" class="btn-primary qs-submit">Search cars</button>
+            </form>
 
         </div>
     </section>
@@ -876,32 +969,32 @@
 
             <div class="feat-grid">
                 <div class="feat-card">
-                    <div class="feat-icon">✓</div>
+                    <div class="feat-icon" aria-hidden="true">✓</div>
                     <h4>Verified Listings</h4>
                     <p>Every car is inspected and every seller is identity-checked before it goes live.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">$</div>
+                    <div class="feat-icon" aria-hidden="true">$</div>
                     <h4>Transparent Pricing</h4>
                     <p>No hidden dealer fees. The price you see includes everything you'll pay.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">⚡</div>
+                    <div class="feat-icon" aria-hidden="true">⚡</div>
                     <h4>Fast Reservations</h4>
                     <p>Reserve a car online in minutes and lock in your price while you arrange financing.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">⇄</div>
+                    <div class="feat-icon" aria-hidden="true">⇄</div>
                     <h4>Easy Comparisons</h4>
                     <p>Filter by price, mileage, and year to compare similar cars side by side.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">🛡</div>
+                    <div class="feat-icon" aria-hidden="true">🛡</div>
                     <h4>Buyer Protection</h4>
                     <p>Every purchase is covered by our 7-day return window and title guarantee.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">☎</div>
+                    <div class="feat-icon" aria-hidden="true">☎</div>
                     <h4>Real Support</h4>
                     <p>A human team is available by chat and phone through every step of the purchase.</p>
                 </div>
@@ -943,7 +1036,7 @@
                             <span class="meta-pill">{{ car.color }}</span>
                         </div>
 
-                        <a href="{% url 'car_list' %}"><button class="buy-btn">get in touch</button></a>
+                        <a href="{% url 'car_detail' car.id %}"><button class="buy-btn">View details</button></a>
                         <a href="{% url 'car_list' %}" class="browse-link">View all listings →</a>
                     </div>
 
@@ -989,20 +1082,20 @@
             </div>
             <div class="footer-col">
                 <div class="col-title">Product</div>
-                <a href="#">Browse Cars</a>
-                <a href="#">Features</a>
-                <a href="#">Dashboard</a>
+                <a href="{% url 'car_list' %}">Browse Cars</a>
+                <a href="{% url 'compare' %}">Compare Cars</a>
+                <a href="#features">Features</a>
             </div>
             <div class="footer-col">
                 <div class="col-title">Company</div>
                 <a href="{% url 'contact' %}">Contact</a>
-                <a href="#">About</a>
-                <a href="#">Careers</a>
+                <span class="soon">About (soon)</span>
+                <span class="soon">Careers (soon)</span>
             </div>
             <div class="footer-col">
                 <div class="col-title">Legal</div>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
+                <span class="soon">Privacy (soon)</span>
+                <span class="soon">Terms (soon)</span>
             </div>
         </div>
         <div class="footer-bottom">
